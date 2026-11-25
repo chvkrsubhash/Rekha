@@ -1,0 +1,249 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ───────────────────────── Base Styles ───────────────────────── */
+@layer base {
+  :root {
+    --color-primary:    #0d9488;
+    --color-secondary:  #115e59;
+    --color-blackboard: #202020;
+    --color-chalkboard: #173F35;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Prevent pull-to-refresh interfering with canvas gestures */
+    overscroll-behavior: none;
+  }
+
+  body {
+    @apply bg-blackboard text-ink-100 antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-ink-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-ink-600;
+  }
+
+  /* Focus rings */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2 ring-offset-blackboard;
+  }
+
+  /* Selection */
+  ::selection {
+    background-color: rgba(13, 148, 136, 0.35);
+    color: inherit;
+  }
+}
+
+/* ───────────────────── Component Utilities ──────────────────── */
+@layer components {
+  /* Glass morphism card */
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+
+  .glass-dark {
+    @apply bg-black/30 backdrop-blur-md border border-white/8;
+  }
+
+  /* Board surface backgrounds */
+  .surface-whiteboard {
+    background-color: #fafafa;
+    background-image: linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .surface-blackboard {
+    background-color: #202020;
+  }
+
+  .surface-chalkboard {
+    background-color: #173F35;
+  }
+
+  .surface-grid {
+    background-color: #1a1a2e;
+    background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .surface-dots {
+    background-color: #1a1a2e;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.12) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Button base */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2
+           text-sm font-medium transition-all duration-150 cursor-pointer
+           disabled:opacity-50 disabled:cursor-not-allowed select-none;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-600 text-white hover:bg-primary-500 active:bg-primary-700
+           shadow-sm hover:shadow-glow-primary;
+  }
+
+  .btn-secondary {
+    @apply btn bg-white/8 text-ink-100 border border-white/12
+           hover:bg-white/12 active:bg-white/6;
+  }
+
+  .btn-ghost {
+    @apply btn text-ink-300 hover:bg-white/8 hover:text-ink-100 active:bg-white/5;
+  }
+
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-500 active:bg-red-700;
+  }
+
+  .btn-icon {
+    @apply inline-flex items-center justify-center rounded-lg p-2
+           text-ink-300 hover:bg-white/10 hover:text-ink-100
+           transition-all duration-150 cursor-pointer
+           disabled:opacity-50 disabled:cursor-not-allowed select-none;
+  }
+
+  /* Input */
+  .input {
+    @apply w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2
+           text-sm text-ink-100 placeholder:text-ink-500
+           focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
+           transition-colors duration-150;
+  }
+
+  /* Label */
+  .label {
+    @apply block text-xs font-medium text-ink-400 mb-1.5;
+  }
+
+  /* Card */
+  .card {
+    @apply rounded-xl border border-white/10 bg-white/5 p-4;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  .badge-primary {
+    @apply badge bg-primary-900/60 text-primary-300 border border-primary-700/30;
+  }
+
+  .badge-green {
+    @apply badge bg-green-900/60 text-green-300 border border-green-700/30;
+  }
+
+  .badge-red {
+    @apply badge bg-red-900/60 text-red-300 border border-red-700/30;
+  }
+
+  .badge-yellow {
+    @apply badge bg-yellow-900/60 text-yellow-300 border border-yellow-700/30;
+  }
+
+  /* Divider */
+  .divider {
+    @apply border-t border-white/8 my-2;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    @apply absolute z-50 rounded-md bg-ink-900 text-ink-100 text-xs px-2 py-1
+           shadow-lg border border-white/10 whitespace-nowrap pointer-events-none;
+  }
+
+  /* Sidebar item */
+  .sidebar-item {
+    @apply flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-ink-400
+           hover:bg-white/8 hover:text-ink-100 transition-all duration-150 cursor-pointer;
+  }
+
+  .sidebar-item-active {
+    @apply sidebar-item bg-primary-900/40 text-primary-300 border border-primary-800/30;
+  }
+}
+
+/* ───────────────────────── Utilities ───────────────────────── */
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .touch-none {
+    touch-action: none;
+  }
+
+  .touch-pan-x {
+    touch-action: pan-x;
+  }
+
+  .touch-pan-y {
+    touch-action: pan-y;
+  }
+
+  .select-none-important {
+    user-select: none !important;
+  }
+
+  /* Telugu & Devanagari font helpers */
+  .font-telugu {
+    font-family: 'Noto Sans Telugu', sans-serif;
+  }
+
+  .font-devanagari {
+    font-family: 'Noto Sans Devanagari', sans-serif;
+  }
+
+  /* Canvas cursor states */
+  .cursor-crosshair  { cursor: crosshair; }
+  .cursor-draw       { cursor: url('/cursors/pen.cur'), crosshair; }
+  .cursor-erase      { cursor: url('/cursors/eraser.cur'), cell; }
+  .cursor-grab       { cursor: grab; }
+  .cursor-grabbing   { cursor: grabbing; }
+  .cursor-text-beam  { cursor: text; }
+  .cursor-zoom-in    { cursor: zoom-in; }
+  .cursor-zoom-out   { cursor: zoom-out; }
+
+  /* Animation helpers */
+  .animate-in {
+    animation-fill-mode: both;
+  }
+
+  /* Perspective for page-turn animation */
+  .perspective {
+    perspective: 1200px;
+  }
+}

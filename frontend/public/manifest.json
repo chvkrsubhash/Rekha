@@ -1,0 +1,14 @@
+{
+  "name": "Rekha — Interactive Teaching Whiteboard",
+  "short_name": "Rekha",
+  "description": "Teach Better. Learn Visually. — by AkashaVyom Labs",
+  "theme_color": "#0D9488",
+  "background_color": "#FFFFFF",
+  "display": "standalone",
+  "start_url": "/dashboard",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
+

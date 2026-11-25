@@ -1,0 +1,508 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Telugu:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
+
+/* ─── CSS Variables ─── */
+:root {
+  --color-primary: #0D9488;
+  --color-primary-dark: #115E59;
+  --color-canvas: #FFFFFF;
+  --color-sidebar: #F8FAFC;
+  --color-text-primary: #1F2937;
+  --color-text-secondary: #64748B;
+  --color-border: #E2E8F0;
+  --color-blackboard: #202020;
+  --color-chalkboard: #173F35;
+
+  --toolbar-width: 56px;
+  --sidebar-width: 240px;
+  --topbar-height: 48px;
+  --pagebar-height: 72px;
+}
+
+/* ─── Base Styles ─── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  font-size: 14px;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--color-text-primary);
+  background-color: var(--color-canvas);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* ─── Canvas Cursor Classes ─── */
+.cursor-pen { cursor: url('/cursors/pen.cur'), crosshair; }
+.cursor-eraser { cursor: url('/cursors/eraser.cur'), cell; }
+.cursor-hand { cursor: grab; }
+.cursor-hand:active { cursor: grabbing; }
+.cursor-text { cursor: text; }
+.cursor-crosshair { cursor: crosshair; }
+.cursor-move { cursor: move; }
+.cursor-pointer { cursor: pointer; }
+
+/* ─── Teaching Toolbar ─── */
+.teaching-toolbar {
+  position: fixed;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 6px 4px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+  user-select: none;
+}
+
+.teaching-toolbar.position-right {
+  left: auto;
+  right: 12px;
+}
+
+.teaching-toolbar.position-bottom {
+  left: 50%;
+  top: auto;
+  bottom: 80px;
+  transform: translateX(-50%);
+  flex-direction: row;
+  padding: 4px 6px;
+}
+
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 7px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+  position: relative;
+}
+
+.toolbar-btn:hover {
+  background: #F1F5F9;
+  color: var(--color-primary);
+}
+
+.toolbar-btn.active {
+  background: #CCFBF1;
+  color: var(--color-primary-dark);
+}
+
+.toolbar-btn.active::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  background: var(--color-primary);
+  border-radius: 2px;
+}
+
+/* ─── Whiteboard Canvas ─── */
+.whiteboard-canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* Background Patterns */
+.bg-ruled {
+  background-color: white;
+  background-image: 
+    linear-gradient(#E2E8F0 1px, transparent 1px),
+    linear-gradient(90deg, #FECACA 1px, transparent 1px);
+  background-size: 100% 30px, 70px 100%;
+  background-position: 0 29px, 70px 0;
+}
+
+.bg-graph {
+  background-color: white;
+  background-image:
+    linear-gradient(rgba(13, 148, 136, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 148, 136, 0.15) 1px, transparent 1px),
+    linear-gradient(rgba(13, 148, 136, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 148, 136, 0.05) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+}
+
+.bg-dotted {
+  background-color: white;
+  background-image: radial-gradient(circle, #CBD5E1 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.bg-blackboard {
+  background-color: #202020;
+}
+
+.bg-chalkboard {
+  background-color: #173F35;
+}
+
+/* ─── Page Panel ─── */
+.page-panel {
+  position: fixed;
+  bottom: 0;
+  left: var(--toolbar-width);
+  right: 0;
+  height: var(--pagebar-height);
+  background: white;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 8px;
+  overflow-x: auto;
+  z-index: 90;
+}
+
+.page-thumbnail {
+  flex-shrink: 0;
+  width: 72px;
+  height: 54px;
+  border-radius: 4px;
+  border: 2px solid var(--color-border);
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  background: white;
+  transition: border-color 0.15s;
+}
+
+.page-thumbnail:hover {
+  border-color: var(--color-primary);
+}
+
+.page-thumbnail.active {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.2);
+}
+
+.page-thumbnail .page-number {
+  position: absolute;
+  bottom: 2px;
+  right: 4px;
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* ─── Top Bar ─── */
+.whiteboard-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--topbar-height);
+  background: white;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 8px;
+  z-index: 100;
+}
+
+/* ─── Presentation Mode ─── */
+.presentation-mode .whiteboard-topbar,
+.presentation-mode .teaching-toolbar,
+.presentation-mode .page-panel,
+.presentation-mode .ai-assistant-panel {
+  display: none !important;
+}
+
+.presentation-controls {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(31, 41, 55, 0.9);
+  border-radius: 32px;
+  padding: 8px 16px;
+  backdrop-filter: blur(8px);
+  z-index: 200;
+}
+
+.presentation-controls button {
+  color: white;
+  background: transparent;
+  border: none;
+  padding: 6px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.presentation-controls button:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* ─── Spotlight Overlay ─── */
+.spotlight-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 150;
+}
+
+/* ─── Curtain Overlay ─── */
+.curtain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #1F2937;
+  z-index: 150;
+  transition: height 0.05s linear;
+}
+
+/* ─── AI Assistant Panel ─── */
+.ai-assistant-panel {
+  position: fixed;
+  right: 0;
+  top: var(--topbar-height);
+  bottom: var(--pagebar-height);
+  width: 320px;
+  background: white;
+  border-left: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 90;
+  transform: translateX(100%);
+  transition: transform 0.2s ease;
+}
+
+.ai-assistant-panel.open {
+  transform: translateX(0);
+}
+
+/* ─── Save Status ─── */
+.save-status {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.save-status.saving {
+  color: #F59E0B;
+}
+
+.save-status.saved {
+  color: #10B981;
+}
+
+.save-status.offline {
+  color: #EF4444;
+}
+
+.save-status.error {
+  color: #EF4444;
+}
+
+/* ─── Selection Handles ─── */
+.selection-handle {
+  fill: white;
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  cursor: pointer;
+}
+
+/* ─── Color Swatches ─── */
+.color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.15);
+}
+
+.color-swatch.selected {
+  box-shadow: 0 0 0 2px var(--color-primary);
+}
+
+/* ─── Equation Display ─── */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* ─── Toast Customization ─── */
+.rekha-toast {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  border-radius: 8px !important;
+}
+
+/* ─── Classroom Code Display ─── */
+.classroom-code {
+  font-family: 'Inter', monospace;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 8px;
+  color: var(--color-primary-dark);
+  text-align: center;
+  padding: 16px 24px;
+  background: #F0FDFA;
+  border: 2px dashed var(--color-primary);
+  border-radius: 8px;
+}
+
+/* ─── Recording Indicator ─── */
+.recording-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #FEE2E2;
+  color: #DC2626;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  animation: recording-pulse 2s infinite;
+}
+
+@keyframes recording-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.recording-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #DC2626;
+  animation: recording-pulse 1s infinite;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 0px;
+  }
+  
+  .teaching-toolbar {
+    left: 4px;
+  }
+  
+  .teaching-toolbar .toolbar-btn {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* ─── Smartboard / Touch Mode ─── */
+@media (hover: none) and (pointer: coarse) {
+  .toolbar-btn {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .teaching-toolbar {
+    padding: 8px 6px;
+    gap: 4px;
+  }
+}
+
+/* ─── Print Styles ─── */
+@media print {
+  .teaching-toolbar,
+  .whiteboard-topbar,
+  .page-panel,
+  .ai-assistant-panel {
+    display: none !important;
+  }
+  
+  .whiteboard-canvas-container {
+    position: static !important;
+  }
+}
+
+/* ─── Utility Classes ─── */
+@layer utilities {
+  .text-telugu {
+    font-family: 'Noto Sans Telugu', sans-serif;
+  }
+  
+  .text-hindi {
+    font-family: 'Noto Sans Devanagari', sans-serif;
+  }
+  
+  .no-select {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  
+  .touch-none {
+    touch-action: none;
+  }
+  
+  .canvas-bg-white { background-color: #FFFFFF; }
+  .canvas-bg-blackboard { background-color: #202020; }
+  .canvas-bg-chalkboard { background-color: #173F35; }
+}
+
